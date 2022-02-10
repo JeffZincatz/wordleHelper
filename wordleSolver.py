@@ -104,12 +104,15 @@ def wordScoreByNextIterPoolSize(guess:str, pool:list):
     
     o = stdev(res)
 
-    # print(f"Guess: {guess} | std_dev={o}")
+    print(f"Word: {guess} | std_dev={o}")
     return o
 
 def runWordleHelper():
     MAX_GUESSES = 6
-    DEFAULT_GUESS = "CRANE"
+    
+    # SUGGESTIONS = ['RAISE', 'LATER', 'ARISE', 'LEAST', 'AROSE', 'IRATE', 'STARE', 'STORE', 'ALONE', 'ALERT']
+    # DEFAULT_GUESS = SUGGESTIONS[0]
+    DEFAULT_GUESS = 'CRANE'
     DEFAULT_PATTERN = "00000"
     remaining = pool
     currGuess = DEFAULT_GUESS
