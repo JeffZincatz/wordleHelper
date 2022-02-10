@@ -1,5 +1,14 @@
 from wordfreq import zipf_frequency
 from letterFreq import letterFrequency
+from statistics import stdev
+
+def getAllPatternPerm():
+    '''
+    Get a tuple of all possible pattern permutations.
+    '''
+    elements = ('0', '1', '2')
+    return [a+b+c+d+e for a in elements for b in elements for c in elements for d in elements for e in elements]
+
 
 pool = []
 
@@ -7,6 +16,7 @@ with open("wordle-answers-alphabetical.txt") as f:
     pool = f.readlines()
 
 pool = list(map(lambda raw: raw[:-1] if raw[-1] == "\n" else raw, pool))
+allPatterns = getAllPatternPerm()
 
 
 def fitPattern(input:str, pattern:str, word:str):
@@ -42,8 +52,27 @@ def fitPattern(input:str, pattern:str, word:str):
             return False
     return True
 
+def getNextPoolSize(guess:str, pool:list, pattern:str):
+    '''
+    Given <guess> as the next guess, <pool> as the current pool of words left, <pattern> as the resulted pattern,
+    return the size of the remaining valid words for the next round.
+    '''
+    if pattern == "22222":
+        # word is a correct hit
+        return 0
+    nextPool = list(filter(lambda word: fitPattern(guess.upper(), pattern, word.upper()), pool))
+    nextPoolSize = len(nextPool)
+    return nextPoolSize
+
+
 def sortByFreq(words:list):
     return sorted(words, key=wordScore, reverse=True)
+
+def sortByWordScore(words:list):
+    return sorted(words, key=(lambda word: wordScoreByNextIterPoolSize(word, words)))
+
+def sortByFreqAndWordScore(words:list):
+    return sorted(words, key=(lambda word: wordScoreByNextIterPoolSize(word, words) / wordScore(word)))
 
 def wordScore(word:str):
     '''
@@ -62,6 +91,22 @@ def wordScore(word:str):
 
     return wordFreq * 0.45 + letterFreqScore * 0.55
 
+def wordScoreByNextIterPoolSize(guess:str, pool:list):
+    '''
+    Return a word score based on the spread of pool sizes from all possible patterns.
+    Low value is good.
+    '''
+    
+    res = []
+    for p in allPatterns:
+        s = getNextPoolSize(guess.upper(), pool, p)
+        res.append(s)
+    
+    o = stdev(res)
+
+    # print(f"Guess: {guess} | std_dev={o}")
+    return o
+
 def runWordleHelper():
     MAX_GUESSES = 6
     DEFAULT_GUESS = "CRANE"
@@ -71,7 +116,7 @@ def runWordleHelper():
     currPattern = DEFAULT_PATTERN
     
     # first guess
-    useDefault = input("Use default guess <CRANE> ? (y/n)").upper()
+    useDefault = input(f"Use default guess <{DEFAULT_GUESS}> ? (y/n)").upper()
     if useDefault != "Y":
         currGuess = inputFiveLetterWord()
     currPattern = inputPattern()
@@ -83,7 +128,7 @@ def runWordleHelper():
         return
     
     # make first guess
-    remaining = sortByFreq(list(filter(lambda word: fitPattern(currGuess, currPattern, word), remaining)))
+    remaining = sortByFreqAndWordScore(list(filter(lambda word: fitPattern(currGuess, currPattern, word), remaining)))
     print(f"Remaining words: \n {remaining}")
     if len(remaining) == 0:
         print("Run out of words! The pattern is not possible, or there are errors in program logic. Please check.")
@@ -99,7 +144,7 @@ def runWordleHelper():
             print(f"Answer found in {i} steps: {currGuess}")
             return
 
-        remaining = sortByFreq(list(filter(lambda word: fitPattern(currGuess, currPattern, word), remaining)))
+        remaining = sortByFreqAndWordScore(list(filter(lambda word: fitPattern(currGuess, currPattern, word), remaining)))
         print(f"Suggested words: \n {remaining}")
         if len(remaining) == 0:
             print("Run out of words! The pattern is not possible, or there are errors in program logic. Please check.")
@@ -124,11 +169,17 @@ def inputPattern():
     result = ""
     while True:
         result = input("Enter resulted pattern: ")
-        if len(result) != 5 or not set(result).issubset({'0', '1', '2'}):
+        if not isPattern(result):
             continue
         break
     return result
-        
 
+def isPattern(pattern:str):
+    return len(pattern) == 5 and set(pattern).issubset({'0', '1', '2'})
+
+        
 if __name__ == "__main__":
     runWordleHelper()
+
+    
+   
