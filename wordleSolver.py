@@ -110,9 +110,11 @@ def wordScoreByNextIterPoolSize(guess:str, pool:list):
 def runWordleHelper():
     MAX_GUESSES = 6
     
-    # SUGGESTIONS = ['RAISE', 'LATER', 'ARISE', 'LEAST', 'AROSE', 'IRATE', 'STARE', 'STORE', 'ALONE', 'ALERT']
-    # DEFAULT_GUESS = SUGGESTIONS[0]
-    DEFAULT_GUESS = 'CRANE'
+    # DEFAULT_GUESS = 'CRANE'
+    # suggestions generated from all words
+    SUGGESTIONS = ['RAISE', 'LATER', 'ARISE', 'LEAST', 'AROSE', 'IRATE', 'STARE', 'STORE', 'ALONE', 'ALERT']
+    DEFAULT_GUESS = SUGGESTIONS[0]
+    
     DEFAULT_PATTERN = "00000"
     remaining = pool
     currGuess = DEFAULT_GUESS
