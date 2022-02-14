@@ -111,6 +111,8 @@ def runWordleHelper():
     MAX_GUESSES = 6
     
     # DEFAULT_GUESS = 'CRANE'
+    # DEFAULT_GUESS = 'SALET'
+    # DEFAULT_GUESS = 'TRACE'
     # suggestions generated from all words
     SUGGESTIONS = ['RAISE', 'LATER', 'ARISE', 'LEAST', 'AROSE', 'IRATE', 'STARE', 'STORE', 'ALONE', 'ALERT']
     DEFAULT_GUESS = SUGGESTIONS[0]
