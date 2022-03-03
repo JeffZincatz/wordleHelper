@@ -2,6 +2,11 @@
 
 > A super basic wordle helper script written in Python
 
+## Getting started
+
+- Dependency:
+  [rspeer/wordfreq](https://github.com/rspeer/wordfreq)
+
 ### Used resources
 
 - [letterFrequency.py](https://gist.github.com/pozhidaevak/0dca594d6f0de367f232909fe21cdb2f) by [pozhidaevak](https://gist.github.com/pozhidaevak)
