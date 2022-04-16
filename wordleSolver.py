@@ -187,6 +187,7 @@ def isPattern(pattern:str):
         
 if __name__ == "__main__":
     runWordleHelper()
+    input("Press enter to exit.")
 
     
    
